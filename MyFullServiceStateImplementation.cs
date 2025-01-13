@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
 using System.Configuration;
+using System.IO;
+using System.ServiceProcess;
 
 
 
@@ -22,7 +15,7 @@ namespace MyFullServiceStateImplementation
         public MyFullServiceStateImplementation()
         {
             InitializeComponent();
-         
+
             // Set the CanPauseAndContinue property to true
             CanPauseAndContinue = true; //The service supports pausing and resuming operations.
 
@@ -53,11 +46,17 @@ namespace MyFullServiceStateImplementation
 
         // Log a message to a file with a timestamp
         //The service logs all its state transitions (Start, Stop, Pause, Continue, Shutdown) to a file named ServiceStateLog.txt in the configured directory.
-       // Each log entry includes a timestamp for tracking purposes.
+        // Each log entry includes a timestamp for tracking purposes.
         private void LogServiceEvent(string message)
         {
             string logMessage = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {message}\n";
             File.AppendAllText(logFilePath, logMessage);
+
+            // Write to console if running interactively
+            if (Environment.UserInteractive)
+            {
+                Console.WriteLine(logMessage);
+            }
         }
 
         // OnStart Event
@@ -96,6 +95,17 @@ namespace MyFullServiceStateImplementation
             // Add shutdown cleanup logic here
         }
 
-        
+        // This is added
+        // Simulate service behavior in console mode
+        public void StartInConsole()
+        {
+            OnStart(null); // Trigger OnStart logic
+            Console.WriteLine("Press Enter to stop the service...");
+            Console.ReadLine(); // Wait for user input to simulate service stopping
+            OnStop(); // Trigger OnStop logic
+            Console.ReadKey();
+
+        }
+
     }
 }

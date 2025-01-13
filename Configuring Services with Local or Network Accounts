@@ -1,0 +1,30 @@
+
+using System.ServiceProcess;
+using System.Configuration.Install;
+
+[RunInstaller(true)]
+public class ProjectInstaller : Installer
+{
+    private ServiceProcessInstaller processInstaller;
+    private ServiceInstaller serviceInstaller;
+
+    public ProjectInstaller()
+    {
+        // Use NetworkService account
+        processInstaller = new ServiceProcessInstaller
+        {
+            Account = ServiceAccount.NetworkService
+        };
+
+        // Define the service
+        serviceInstaller = new ServiceInstaller
+        {
+            ServiceName = "MyCustomNetworkService",
+            DisplayName = "My Custom Network Service",
+            StartType = ServiceStartMode.Automatic
+        };
+
+        Installers.Add(processInstaller);
+        Installers.Add(serviceInstaller);
+    }
+}

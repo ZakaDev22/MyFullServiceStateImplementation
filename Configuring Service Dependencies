@@ -1,0 +1,31 @@
+
+
+using System.ServiceProcess;
+using System.Configuration.Install;
+using System.ComponentModel;
+
+[RunInstaller(true)]
+public class ProjectInstaller : Installer
+{
+    private ServiceProcessInstaller processInstaller;
+    private ServiceInstaller serviceInstaller;
+
+    public ProjectInstaller()
+    {
+        processInstaller = new ServiceProcessInstaller
+        {
+            Account = ServiceAccount.LocalSystem
+        };
+
+        serviceInstaller = new ServiceInstaller
+        {
+            ServiceName = "MyCustomService",
+            DisplayName = "My Custom Service",
+            StartType = ServiceStartMode.Automatic,
+            ServicesDependedOn = new string[] { "RpcSs", "EventLog" } // Dependencies
+        };
+
+        Installers.Add(processInstaller);
+        Installers.Add(serviceInstaller);
+    }
+}
